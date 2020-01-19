@@ -208,6 +208,11 @@ EMSCRIPTEN_BINDINGS(physx)
     .field("translation", &PxTransform::p)
     .field("rotation", &PxTransform::q)
     ;
+  value_object<PxExtendedVec3>("PxExtendedVec3")
+    .field("x", &PxExtendedVec3::x)
+    .field("y", &PxExtendedVec3::y)
+    .field("z", &PxExtendedVec3::z)
+    ;
 
   enum_<PxIDENTITY>("PxIDENTITY")
       .value("PxIdentity", PxIDENTITY::PxIdentity);
@@ -366,7 +371,13 @@ EMSCRIPTEN_BINDINGS(physx)
   class_<PxBaseTask>("PxBaseTask");
   class_<PxDefaultCpuDispatcher, base<PxCpuDispatcher>>("PxDefaultCpuDispatcher");
 
-  class_<PxFilterData>("PxFilterData");
+  class_<PxFilterData>("PxFilterData")
+			.constructor<PxU32, PxU32, PxU32, PxU32>()
+			.property("word0", &PxFilterData::word0)
+			.property("word1", &PxFilterData::word1)
+			.property("word2", &PxFilterData::word2)
+			.property("word3", &PxFilterData::word3);
+
   class_<PxPairFlags>("PxPairFlags");
   class_<PxFilterFlags>("PxFilterFlags");
 
@@ -461,140 +472,6 @@ EMSCRIPTEN_BINDINGS(physx)
       .value("eLOCK_ANGULAR_X", PxRigidDynamicLockFlag::Enum::eLOCK_ANGULAR_X)
       .value("eLOCK_ANGULAR_Y", PxRigidDynamicLockFlag::Enum::eLOCK_ANGULAR_Y)
       .value("eLOCK_ANGULAR_Z", PxRigidDynamicLockFlag::Enum::eLOCK_ANGULAR_Z);
-  
-  enum_<PxControllerShapeType::Enum>("PxControllerShapeType")
-      .value("eBOX", PxControllerShapeType::Enum::eBOX)
-      .value("eCAPSULE", PxControllerShapeType::Enum::eCAPSULE)
-      .value("eFORCE_DWORD", PxControllerShapeType::Enum::eFORCE_DWORD);
-  enum_<PxCapsuleClimbingMode::Enum>("PxCapsuleClimbingMode")
-      .value("eEASY", PxCapsuleClimbingMode::Enum::eEASY)
-      .value("eCONSTRAINED", PxCapsuleClimbingMode::Enum::eCONSTRAINED)
-      .value("eLAST", PxCapsuleClimbingMode::Enum::eLAST);
-  enum_<PxControllerNonWalkableMode::Enum>("PxControllerNonWalkableMode")
-      .value("ePREVENT_CLIMBING", PxControllerNonWalkableMode::Enum::ePREVENT_CLIMBING)
-      .value("ePREVENT_CLIMBING_AND_FORCE_SLIDING", PxControllerNonWalkableMode::Enum::ePREVENT_CLIMBING_AND_FORCE_SLIDING);
-  
-  function("PxCreateControllerManager", &PxCreateControllerManager, allow_raw_pointers());
-  
-  class_<PxControllerManager>("PxControllerManager")
-      .function("release", &PxControllerManager::release)
-      // .function("getScene", &PxControllerManager::getScene)
-      // .function("getNbControllers", &PxControllerManager::getNbControllers)
-      // .function("getController", &PxControllerManager::getController)
-      // .function("createController", &PxControllerManager::createController)
-
-      // .function("purgeControllers", &PxControllerManager::purgeControllers)
-      // .function("getRenderBuffer", &PxControllerManager::getRenderBuffer)
-      // .function("setDebugRenderingFlags", &PxControllerManager::setDebugRenderingFlags)
-      // .function("getNbObstacleContexts", &PxControllerManager::getNbObstacleContexts)
-      // .function("getObstacleContext", &PxControllerManager::getObstacleContext)
-      // .function("createObstacleContext", &PxControllerManager::createObstacleContext)
-
-      // .function("computeInteractions", &PxControllerManager::computeInteractions)
-      // .function("setTesselation", &PxControllerManager::setTesselation)
-      // .function("setOverlapRecoveryModule", &PxControllerManager::setOverlapRecoveryModule)
-      // .function("setPreciseSweeps", &PxControllerManager::setPreciseSweeps)
-      // .function("setPreventVerticalSlidingAgainstCeiling", &PxControllerManager::setPreventVerticalSlidingAgainstCeiling)
-      // .function("shiftOrigin", &PxControllerManager::shiftOrigin)
-      ;
-    
-  // class_<PxController>("PxController")
-  //     .function("getType", &PxController::getType)
-  //     .function("release", &PxController::release)
-  //     .function("move", &PxController::move)
-  //     .function("setPosition", &PxController::setPosition)
-  //     .function("getPosition", &PxController::getPosition)
-  //     .function("setFootPosition", &PxController::setFootPosition)
-  //     .function("getFootPosition", &PxController::getFootPosition)
-  //     .function("getActor", &PxController::getActor)
-  //     .function("setStepOffset", &PxController::setStepOffset)
-  //     .function("getStepOffset", &PxController::getStepOffset)
-  //     .function("setNonWalkableMode", &PxController::setNonWalkableMode)
-  //     .function("getNonWalkableMode", &PxController::getNonWalkableMode)
-  //     .function("getContactOffset", &PxController::getContactOffset)
-  //     .function("setContactOffset", &PxController::setContactOffset)
-  //     .function("getUpDirection", &PxController::getUpDirection)
-  //     .function("setUpDirection", &PxController::setUpDirection)
-  //     .function("getSlopeLimit", &PxController::getSlopeLimit)
-  //     .function("setSlopeLimit", &PxController::setSlopeLimit)
-  //     .function("invalidateCache", &PxController::invalidateCache)
-  //     .function("getScene", &PxController::getScene)
-  //     .function("getUserData", &PxController::getUserData)
-  //     .function("setUserData", &PxController::setUserData)
-  //     .function("getState", &PxController::getState)
-  //     .function("getStats", &PxController::getStats)
-  //     .function("resize", &PxController::resize)
-  //     ;
-
-  class_<PxExtendedVec3>("PxExtendedVec3")
-      .constructor<>()
-      .constructor<int, int, int>()
-      .function("isZero", &PxExtendedVec3::isZero)
-      .function("dot", &PxExtendedVec3::dot)
-      .function("distanceSquared", &PxExtendedVec3::distanceSquared)
-      .function("magnitudeSquared", &PxExtendedVec3::magnitudeSquared)
-      .function("magnitude", &PxExtendedVec3::magnitude)
-      .function("normalize", &PxExtendedVec3::normalize)
-      .function("isFinite", &PxExtendedVec3::isFinite)
-      .function("maximum", &PxExtendedVec3::maximum)
-      .function("minimum", &PxExtendedVec3::minimum)
-      .function("set", &PxExtendedVec3::set)
-      .function("setPlusInfinity", &PxExtendedVec3::setPlusInfinity)
-      .function("setMinusInfinity", &PxExtendedVec3::setMinusInfinity)
-      // TODO: cross overloads 
-      // .function("cross", &PxExtendedVec3::cross)
-      // TODO: operators !?
-      .property("x", &PxExtendedVec3::x)
-      .property("y", &PxExtendedVec3::y)
-      .property("z", &PxExtendedVec3::z)
-      ;
-
-  class_<PxControllerDesc>("PxControllerDesc")
-      .function("isValid", &PxControllerDesc::isValid)
-      .function("getType", &PxControllerDesc::getType)
-      .property("position", &PxControllerDesc::position)
-      .property("upDirection", &PxControllerDesc::upDirection)
-      .property("slopeLimit", &PxControllerDesc::slopeLimit)
-      .property("invisibleWallHeight", &PxControllerDesc::invisibleWallHeight)
-      .property("maxJumpHeight", &PxControllerDesc::maxJumpHeight)
-      .property("contactOffset", &PxControllerDesc::contactOffset)
-      .property("stepOffset", &PxControllerDesc::stepOffset)
-      .property("density", &PxControllerDesc::density)
-      .property("scaleCoeff", &PxControllerDesc::scaleCoeff)
-      .property("volumeGrowth", &PxControllerDesc::volumeGrowth)
-      // TODO: not sure how to bind callbacks
-      // .property("reportCallback", &PxControllerDesc::reportCallback)
-      // .property("behaviorCallback", &PxControllerDesc::behaviorCallback)
-      .property("nonWalkableMode", &PxControllerDesc::nonWalkableMode)
-      // TODO: material setter is PxMaterial* and it wont work as-is
-      // .property("material", &PxControllerDesc::material, allow_raw_pointers()) 
-      // HACK: a workaround for --^ is to use a custom function
-      .function("setMaterial", optional_override(
-          [](PxControllerDesc &desc, PxMaterial* material) {
-              return desc.material = material;
-          }), allow_raw_pointers())
-      // .property("registerDeletionListener", &PxControllerDesc::registerDeletionListener)
-      // .property("userData", &PxControllerDesc::userData)
-      ;
-
-  class_<PxCapsuleControllerDesc, base<PxControllerDesc>>("PxCapsuleControllerDesc")
-      .constructor<>()
-      .function("setToDefault", &PxCapsuleControllerDesc::setToDefault)
-      .function("isValid", &PxCapsuleControllerDesc::isValid)
-      .property("radius", &PxCapsuleControllerDesc::radius)
-      .property("height", &PxCapsuleControllerDesc::height)
-      .property("climbingMode", &PxCapsuleControllerDesc::climbingMode)
-      ;
-
-  // TODO: not sure how to do these callbacks...?
-  // TODO: PxUserControllerHitReport - on PxControllerDesc::reportCallback
-  // TODO: PxControllerBehaviorCallback - on PxControllerDesc::behaviorCallback
-  // TODO: PxControllerFilterCallback
-  // TODO: PxControllerFilters (param in PxController::move)
-  // TODO: PxObstacleContext (param in PxController::move)
-  // TODO: PxControllerCollisionFlags (returned by PxController:move)
-  // TODO: PxControllerState (returned by PxController::getState)
-  // TODO: PxControllerStats (returned by PxController::getStats)
 
   /** Geometry **/
   class_<PxGeometry>("PxGeometry");
@@ -626,6 +503,80 @@ EMSCRIPTEN_BINDINGS(physx)
   /** End Geometry **/
 
   class_<PxPlane>("PxPlane").constructor<float, float, float, float>();
+
+  /** Character Controller **/
+  
+  function("PxCreateControllerManager", &PxCreateControllerManager, allow_raw_pointers());
+
+  enum_<PxControllerShapeType::Enum>("PxControllerShapeType")
+      .value("eBOX", PxControllerShapeType::Enum::eBOX)
+      .value("eCAPSULE", PxControllerShapeType::Enum::eCAPSULE)
+      .value("eFORCE_DWORD", PxControllerShapeType::Enum::eFORCE_DWORD);
+  
+  enum_<PxCapsuleClimbingMode::Enum>("PxCapsuleClimbingMode")
+      .value("eEASY", PxCapsuleClimbingMode::Enum::eEASY)
+      .value("eCONSTRAINED", PxCapsuleClimbingMode::Enum::eCONSTRAINED)
+      .value("eLAST", PxCapsuleClimbingMode::Enum::eLAST);
+  
+  enum_<PxControllerNonWalkableMode::Enum>("PxControllerNonWalkableMode")
+      .value("ePREVENT_CLIMBING", PxControllerNonWalkableMode::Enum::ePREVENT_CLIMBING)
+      .value("ePREVENT_CLIMBING_AND_FORCE_SLIDING", PxControllerNonWalkableMode::Enum::ePREVENT_CLIMBING_AND_FORCE_SLIDING);
+  
+  class_<PxControllerManager>("PxControllerManager")
+      .function("createController", &PxControllerManager::createController, allow_raw_pointers())
+      .function("setTessellation", &PxControllerManager::setTessellation)
+      .function("setOverlapRecoveryModule", &PxControllerManager::setOverlapRecoveryModule)
+      .function("setPreciseSweeps", &PxControllerManager::setPreciseSweeps)
+      .function("setPreventVerticalSlidingAgainstCeiling", &PxControllerManager::setPreventVerticalSlidingAgainstCeiling)
+      .function("shiftOrigin", &PxControllerManager::shiftOrigin);
+    
+  class_<PxController>("PxController")
+      .function("move", &PxController::move, allow_raw_pointers())
+      .function("setPosition", &PxController::setPosition)
+      .function("getPosition", &PxController::getPosition);
+
+  class_<PxControllerDesc>("PxControllerDesc")
+      .function("isValid", &PxControllerDesc::isValid)
+      .function("getType", &PxControllerDesc::getType)
+      .property("position", &PxControllerDesc::position)
+      .property("upDirection", &PxControllerDesc::upDirection)
+      .property("slopeLimit", &PxControllerDesc::slopeLimit)
+      .property("invisibleWallHeight", &PxControllerDesc::invisibleWallHeight)
+      .property("maxJumpHeight", &PxControllerDesc::maxJumpHeight)
+      .property("contactOffset", &PxControllerDesc::contactOffset)
+      .property("stepOffset", &PxControllerDesc::stepOffset)
+      .property("density", &PxControllerDesc::density)
+      .property("scaleCoeff", &PxControllerDesc::scaleCoeff)
+      .property("volumeGrowth", &PxControllerDesc::volumeGrowth)
+      .property("nonWalkableMode", &PxControllerDesc::nonWalkableMode)
+      // `material` property doesn't work as-is so we create a setMaterial function
+      .function("setMaterial", optional_override(
+          [](PxControllerDesc &desc, PxMaterial* material) {
+              return desc.material = material;
+          }), allow_raw_pointers());
+
+  class_<PxCapsuleControllerDesc, base<PxControllerDesc>>("PxCapsuleControllerDesc")
+      .constructor<>()
+      .function("isValid", &PxCapsuleControllerDesc::isValid)
+      .property("radius", &PxCapsuleControllerDesc::radius)
+      .property("height", &PxCapsuleControllerDesc::height)
+      .property("climbingMode", &PxCapsuleControllerDesc::climbingMode);
+
+  class_<PxObstacleContext>("PxObstacleContext");
+
+  class_<PxControllerFilters>("PxControllerFilters")
+      .constructor<const PxFilterData*, PxQueryFilterCallback*, PxControllerFilterCallback*>();
+
+	class_<PxControllerFilterCallback>("ControllerFilterCallback");
+
+  class_<PxControllerCollisionFlags>("ControllerCollisionFlags")
+			.constructor<PxU32>()
+			.function("isSet", &PxControllerCollisionFlags::isSet);
+
+  enum_<PxControllerCollisionFlag::Enum>("PxControllerCollisionFlag")
+      .value("eCOLLISION_SIDES", PxControllerCollisionFlag::Enum::eCOLLISION_SIDES)
+      .value("eCOLLISION_UP", PxControllerCollisionFlag::Enum::eCOLLISION_UP)
+      .value("eCOLLISION_DOWN", PxControllerCollisionFlag::Enum::eCOLLISION_DOWN);
 }
 
 
@@ -704,6 +655,10 @@ void raw_destructor<PxConvexMesh>(PxConvexMesh *)
 template<> 
 void raw_destructor<PxTriangleMesh>(PxTriangleMesh *) 
 { /* do nothing */ 
+}
+template <>
+void raw_destructor<PxController>(PxController *)
+{ /* do nothing */
 }
 template <>
 void raw_destructor<PxControllerDesc>(PxControllerDesc *)
