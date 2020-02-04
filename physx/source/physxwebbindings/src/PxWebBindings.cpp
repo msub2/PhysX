@@ -531,6 +531,7 @@ EMSCRIPTEN_BINDINGS(physx)
       .function("shiftOrigin", &PxControllerManager::shiftOrigin);
     
   class_<PxController>("PxController")
+      .function("release", &PxController::release)
       .function("move", &PxController::move, allow_raw_pointers())
       .function("setPosition", &PxController::setPosition)
       .function("getPosition", &PxController::getPosition);
