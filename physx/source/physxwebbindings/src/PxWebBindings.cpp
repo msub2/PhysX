@@ -35,6 +35,24 @@ PxRaycastHit* allocateRaycastHitBuffers(PxU32 nb) {
   return myArray;
 }
 
+struct PxSweepCallbackWrapper : public wrapper<PxSweepCallback> {
+  EMSCRIPTEN_WRAPPER(PxSweepCallbackWrapper)
+  PxAgain processTouches(const PxSweepHit *buffer, PxU32 nbHits) {
+    for (PxU32 i = 0; i < nbHits; i++) {
+      bool again = call<PxAgain>("processTouches", buffer[i]);
+      if (!again) {
+        return false;
+      }
+    }
+    return true;
+  }
+};
+
+PxSweepHit* allocateSweepHitBuffers(PxU32 nb) {
+  PxSweepHit *myArray = new PxSweepHit[nb];
+  return myArray;
+}
+
 struct PxSimulationEventCallbackWrapper : public wrapper<PxSimulationEventCallback> {
   EMSCRIPTEN_WRAPPER(PxSimulationEventCallbackWrapper)
   void onConstraintBreak(PxConstraintInfo *, PxU32) {}
@@ -272,7 +290,8 @@ EMSCRIPTEN_BINDINGS(physx)
                                       bool fetched = scene.fetchResults(block);
                                       return fetched;
                                     }))
-      .function("raycast", &PxScene::raycast, allow_raw_pointers());
+      .function("raycast", &PxScene::raycast, allow_raw_pointers())
+      .function("sweep", &PxScene::sweep, allow_raw_pointers());
 
   class_<PxLocationHit>("PxLocationHit")
       .property("position", &PxLocationHit::position)
@@ -290,6 +309,23 @@ EMSCRIPTEN_BINDINGS(physx)
   class_<PxRaycastBuffer, base<PxRaycastCallback>>("PxRaycastBuffer").constructor<>();
 
   function("allocateRaycastHitBuffers", &allocateRaycastHitBuffers, allow_raw_pointers());
+
+  class_<PxSweepHit, base<PxLocationHit>>("PxSweepHit").constructor<>()
+      .function("getShape", optional_override(
+                                [](PxSweepHit &block){
+                                  return block.shape;
+                                }), allow_raw_pointers())
+      .function("getActor", optional_override(
+                                [](PxSweepHit &block){
+                                  return block.actor;
+                                }), allow_raw_pointers());
+  class_<PxSweepCallback>("PxSweepCallback")
+      .property("block", &PxSweepCallback::block)
+      .property("hasBlock", &PxSweepCallback::hasBlock)
+      .allow_subclass<PxSweepCallbackWrapper>("PxSweepCallbackWrapper", constructor<PxSweepHit*, PxU32>());
+  class_<PxSweepBuffer, base<PxSweepCallback>>("PxSweepBuffer").constructor<>();
+
+  function("allocateSweepHitBuffers", &allocateSweepHitBuffers, allow_raw_pointers());
 
   class_<PxHitFlags>("PxHitFlags").constructor<int>();
   enum_<PxHitFlag::Enum>("PxHitFlag")
