@@ -438,6 +438,7 @@ EMSCRIPTEN_BINDINGS(physx)
       .function("setAngularVelocity", &PxRigidBody::setAngularVelocity)
       .function("getAngularVelocity", &PxRigidBody::getAngularVelocity)
       .function("setMass", &PxRigidBody::setMass)
+      .function("setCMassLocalPose", &PxRigidBody::setCMassLocalPose, allow_raw_pointers())
       .function("setLinearVelocity", &PxRigidBody::setLinearVelocity)
       .function("getLinearVelocity", &PxRigidBody::getLinearVelocity)
       .function("addForceAtPos", optional_override(
