@@ -126,6 +126,28 @@ PxFilterFlags DefaultFilterShader(
   return PxFilterFlag::eDEFAULT;
 }
 
+PxFilterFlags LayerMaskFilterShader(  
+  PxFilterObjectAttributes attributes0, PxFilterData filterData0, 
+  PxFilterObjectAttributes attributes1, PxFilterData filterData1,
+  PxPairFlags& pairFlags, const void* , PxU32 )
+{
+  if(PxFilterObjectIsTrigger(attributes0) || PxFilterObjectIsTrigger(attributes1))
+  {
+    pairFlags = PxPairFlag::eTRIGGER_DEFAULT | PxPairFlag::eDETECT_CCD_CONTACT;
+    return PxFilterFlag::eDEFAULT;
+  }
+
+  // Support collision matrix layers
+  // word0: the layer - eg 1 << 16 (16th bit 1 all others 0)
+  // word1: the mask - each active bit is a layer that collides with this
+  if(!(filterData0.word0 & filterData1.word1) && !(filterData1.word0 & filterData0.word1)) {
+    return PxFilterFlag::eSUPPRESS;
+  }
+
+  pairFlags = PxPairFlag::eCONTACT_DEFAULT | PxPairFlag::eNOTIFY_TOUCH_FOUND | PxPairFlag::eNOTIFY_TOUCH_LOST | PxPairFlag::eNOTIFY_TOUCH_PERSISTS |PxPairFlag::eDETECT_CCD_CONTACT;
+  return PxFilterFlag::eDEFAULT;
+}
+
 // TODO: Getting the  global PxDefaultSimulationFilterShader into javascript
 // is problematic, so let's provide this custom factory function for now
 
@@ -134,7 +156,7 @@ PxSceneDesc *getDefaultSceneDesc(PxTolerancesScale &scale, int numThreads, PxSim
   PxSceneDesc *sceneDesc = new PxSceneDesc(scale);
   sceneDesc->gravity = PxVec3(0.0f, -9.81f, 0.0f);
   sceneDesc->cpuDispatcher = PxDefaultCpuDispatcherCreate(numThreads);
-  sceneDesc->filterShader = DefaultFilterShader;
+  sceneDesc->filterShader = LayerMaskFilterShader;
   sceneDesc->simulationEventCallback = callback;
   sceneDesc->kineKineFilteringMode = PxPairFilteringMode::eKEEP;
   sceneDesc->staticKineFilteringMode = PxPairFilteringMode::eKEEP;
