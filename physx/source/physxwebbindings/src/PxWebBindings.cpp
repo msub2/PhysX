@@ -66,7 +66,16 @@ struct PxQueryFilterCallbackWrapper : public wrapper<PxQueryFilterCallback> {
 
 struct PxSimulationEventCallbackWrapper : public wrapper<PxSimulationEventCallback> {
   EMSCRIPTEN_WRAPPER(PxSimulationEventCallbackWrapper)
-  void onConstraintBreak(PxConstraintInfo *, PxU32) {}
+  void onConstraintBreak(PxConstraintInfo *constraints, PxU32 count) {
+    for(PxU32 i=0; i<count; i++)
+    {
+      PxJoint* joint = reinterpret_cast<PxJoint*>(constraints[i].externalReference);
+      PxRigidActor* actor0 = NULL;
+	    PxRigidActor* actor1 = NULL;
+      joint->getActors(actor0, actor1);
+      call<void>("onConstraintBreak", actor0, actor1);
+    }
+  }
   void onWake(PxActor **, PxU32) {}
   void onSleep(PxActor **, PxU32) {}
   void onContact(const PxContactPairHeader &, const PxContactPair *pairs, PxU32 nbPairs) {
@@ -206,7 +215,8 @@ EMSCRIPTEN_BINDINGS(physx)
   function("PxD6JointCreate", &PxD6JointCreate, allow_raw_pointers());
 
   class_<PxJoint>("PxJoint")
-      .function("release", &PxJoint::release);
+      .function("release", &PxJoint::release)
+      .function("setBreakForce", &PxJoint::setBreakForce, allow_raw_pointers());
   class_<PxSphericalJoint, base<PxJoint>>("PxSphericalJoint");
   class_<PxRevoluteJoint, base<PxJoint>>("PxRevoluteJoint");
   class_<PxFixedJoint, base<PxJoint>>("PxFixedJoint");
