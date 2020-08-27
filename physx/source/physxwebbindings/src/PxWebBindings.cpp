@@ -624,6 +624,8 @@ EMSCRIPTEN_BINDINGS(physx)
       .function("move", &PxController::move, allow_raw_pointers())
       .function("setPosition", &PxController::setPosition)
       .function("getPosition", &PxController::getPosition)
+      .function("setFootPosition", &PxController::setFootPosition)
+      .function("getFootPosition", &PxController::getFootPosition)
       .function("setSimulationFilterData", optional_override(
           [](PxController &ctrl, PxFilterData &data) {
             PxRigidDynamic* actor = ctrl.getActor();
