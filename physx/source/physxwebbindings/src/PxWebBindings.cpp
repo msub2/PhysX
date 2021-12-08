@@ -401,7 +401,6 @@ EMSCRIPTEN_BINDINGS(physx)
   class_<PxShape>("PxShape")
       .function("release", &PxShape::release)
       .function("getActor", &PxShape::getActor, allow_raw_pointers())
-      // .function("getActor", &PxShape::getActor)
       .function("getFlags", &PxShape::getFlags)
       .function("setFlag", &PxShape::setFlag)
       .function("setLocalPose", &PxShape::setLocalPose)
@@ -629,7 +628,6 @@ EMSCRIPTEN_BINDINGS(physx)
       .function("setFootPosition", &PxController::setFootPosition)
       .function("getFootPosition", &PxController::getFootPosition)
       .function("getActor", &PxController::getActor, allow_raw_pointers())
-      // .function("getActor", &PxController::getActor)
       .function("setSimulationFilterData", optional_override(
           [](PxController &ctrl, PxFilterData &data) {
             PxRigidDynamic* actor = ctrl.getActor();
