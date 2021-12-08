@@ -103,9 +103,9 @@ struct PxSimulationEventCallbackWrapper : public wrapper<PxSimulationEventCallba
           continue;
 
       if(tp.status & PxPairFlag::eNOTIFY_TOUCH_FOUND) {
-        call<void>("onTriggerBegin", tp.triggerShape, tp.otherShape);
+        call<void>("onTriggerBegin", tp.triggerActor, tp.otherActor);
       } else if(tp.status & PxPairFlag::eNOTIFY_TOUCH_LOST) {
-        call<void>("onTriggerEnd", tp.triggerShape, tp.otherShape);
+        call<void>("onTriggerEnd", tp.triggerActor, tp.otherActor);
       }
     }
   }
@@ -400,6 +400,8 @@ EMSCRIPTEN_BINDINGS(physx)
   // This is overrided to use std::vector<PxMaterial*>
   class_<PxShape>("PxShape")
       .function("release", &PxShape::release)
+      .function("getActor", &PxShape::getActor, allow_raw_pointers())
+      // .function("getActor", &PxShape::getActor)
       .function("getFlags", &PxShape::getFlags)
       .function("setFlag", &PxShape::setFlag)
       .function("setLocalPose", &PxShape::setLocalPose)
@@ -626,6 +628,8 @@ EMSCRIPTEN_BINDINGS(physx)
       .function("getPosition", &PxController::getPosition)
       .function("setFootPosition", &PxController::setFootPosition)
       .function("getFootPosition", &PxController::getFootPosition)
+      .function("getActor", &PxController::getActor, allow_raw_pointers())
+      // .function("getActor", &PxController::getActor)
       .function("setSimulationFilterData", optional_override(
           [](PxController &ctrl, PxFilterData &data) {
             PxRigidDynamic* actor = ctrl.getActor();
