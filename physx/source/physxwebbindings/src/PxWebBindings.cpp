@@ -627,6 +627,7 @@ EMSCRIPTEN_BINDINGS(physx)
       .function("getPosition", &PxController::getPosition)
       .function("setFootPosition", &PxController::setFootPosition)
       .function("getFootPosition", &PxController::getFootPosition)
+      .function("resize", &PxController::resize)
       .function("getActor", &PxController::getActor, allow_raw_pointers())
       .function("setSimulationFilterData", optional_override(
           [](PxController &ctrl, PxFilterData &data) {
