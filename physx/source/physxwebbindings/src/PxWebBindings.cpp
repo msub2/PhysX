@@ -103,9 +103,9 @@ struct PxSimulationEventCallbackWrapper : public wrapper<PxSimulationEventCallba
           continue;
 
       if(tp.status & PxPairFlag::eNOTIFY_TOUCH_FOUND) {
-        call<void>("onTriggerBegin", tp.triggerActor, tp.otherActor);
+        call<void>("onTriggerBegin", tp.triggerShape, tp.otherShape);
       } else if(tp.status & PxPairFlag::eNOTIFY_TOUCH_LOST) {
-        call<void>("onTriggerEnd", tp.triggerActor, tp.otherActor);
+        call<void>("onTriggerEnd", tp.triggerShape, tp.otherShape);
       }
     }
   }
