@@ -619,6 +619,8 @@ EMSCRIPTEN_BINDINGS(physx)
       .function("setPreciseSweeps", &PxControllerManager::setPreciseSweeps)
       .function("setPreventVerticalSlidingAgainstCeiling", &PxControllerManager::setPreventVerticalSlidingAgainstCeiling)
       .function("shiftOrigin", &PxControllerManager::shiftOrigin);
+
+  class_<PxControllerState>("PxControllerState");
     
   class_<PxController>("PxController")
       .function("release", &PxController::release)
@@ -629,6 +631,12 @@ EMSCRIPTEN_BINDINGS(physx)
       .function("getFootPosition", &PxController::getFootPosition)
       .function("resize", &PxController::resize)
       .function("getActor", &PxController::getActor, allow_raw_pointers())
+      .function("getTouchedActor", optional_override(
+          [](PxController &ctrl) {
+            PxControllerState state;
+            ctrl.getState(state);
+            return state.touchedActor;
+          }), allow_raw_pointers())
       .function("setSimulationFilterData", optional_override(
           [](PxController &ctrl, PxFilterData &data) {
             PxRigidDynamic* actor = ctrl.getActor();
