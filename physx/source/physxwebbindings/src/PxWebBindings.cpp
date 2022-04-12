@@ -157,7 +157,7 @@ PxFilterFlags LayerMaskFilterShader(
     pairFlags = PxPairFlag::eTRIGGER_DEFAULT | PxPairFlag::eDETECT_CCD_CONTACT;
     return PxFilterFlag::eDEFAULT;
   }
-  
+
   // Collision group ids. Prevent objects in same collision "object" from self-colliding
   if (filterData0.word2 > 0 && filterData1.word2 > 0 && filterData0.word2 == filterData1.word2)
   {
@@ -677,6 +677,7 @@ EMSCRIPTEN_BINDINGS(physx)
                                   return PxRigidBodyExt::setMassAndUpdateInertia(body, mass, NULL, false);
                                 }))
       .function("setMassSpaceInertiaTensor", &PxRigidBody::setMassSpaceInertiaTensor)
+      .function("getMassSpaceInertiaTensor", &PxRigidBody::getMassSpaceInertiaTensor)
       .function("updateMassAndInertia", optional_override(
                                 [](PxRigidBody &body, std::vector<PxReal> shapeDensities) {
                                   return PxRigidBodyExt::updateMassAndInertia(body, &shapeDensities[0], shapeDensities.size());
