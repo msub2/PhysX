@@ -577,7 +577,9 @@ EMSCRIPTEN_BINDINGS(physx)
       .value("eVISUALIZATION", PxShapeFlag::Enum::eVISUALIZATION);
 
   enum_<PxActorFlag::Enum>("PxActorFlag")
-      .value("eDISABLE_GRAVITY", PxActorFlag::Enum::eDISABLE_GRAVITY);
+      .value("eDISABLE_GRAVITY", PxActorFlag::Enum::eDISABLE_GRAVITY)
+      .value("eSEND_SLEEP_NOTIFIES", PxActorFlag::Enum::eSEND_SLEEP_NOTIFIES)
+      .value("eDISABLE_SIMULATION", PxActorFlag::Enum::eDISABLE_SIMULATION);
 
   class_<PxErrorCallback>("PxErrorCallback");
   class_<PxDefaultErrorCallback, base<PxErrorCallback>>("PxDefaultErrorCallback").constructor<>();
