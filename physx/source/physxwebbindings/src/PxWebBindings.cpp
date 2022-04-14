@@ -321,8 +321,16 @@ EMSCRIPTEN_BINDINGS(physx)
       }))
       .function("setBreakForce", optional_override([](PxConstraint& c, PxReal linear, PxReal angular) {c.setBreakForce(linear, angular);}));
 
+  enum_<PxJointActorIndex::Enum>("PxJointActorIndex")
+      .value("eACTOR0", PxJointActorIndex::eACTOR0)
+      .value("eACTOR1", PxJointActorIndex::eACTOR1)
+      .value("COUNT", PxJointActorIndex::COUNT);
+
   class_<PxJoint>("PxJoint")
       .function("release", &PxJoint::release)
+      .function("setLocalPose", &PxJoint::setLocalPose)
+      .function("getLocalPose", &PxJoint::getLocalPose)
+      .function("getRelativeTransform", &PxJoint::getRelativeTransform)
       .function("setBreakForce", optional_override([](PxJoint& c, PxReal linear, PxReal angular) {c.setBreakForce(linear, angular);}))
       .function("setConstraintFlag", &PxJoint::setConstraintFlag)
       .function("getConstraint", &PxJoint::getConstraint, allow_raw_pointers());
@@ -705,6 +713,7 @@ EMSCRIPTEN_BINDINGS(physx)
       .function("setSleepThreshold", &PxRigidDynamic::setSleepThreshold)
       .function("getSleepThreshold", &PxRigidDynamic::getSleepThreshold)
       .function("setKinematicTarget", &PxRigidDynamic::setKinematicTarget)
+      .function("setRigidDynamicLockFlag", &PxRigidDynamic::setRigidDynamicLockFlag)
       .function("setRigidDynamicLockFlags", &PxRigidDynamic::setRigidDynamicLockFlags)
       .function("setSolverIterationCounts", &PxRigidDynamic::setSolverIterationCounts);
   class_<PxRigidDynamicLockFlags>("PxRigidDynamicLockFlags").constructor<int>();
